@@ -68,6 +68,7 @@ public class Synth {
         } catch (CmdLineException e) {
             System.err.println("Usage: " +
                     "[ -count <number>G|M|K ] " +
+                    "-sleep sleepMillis " +
                     "-schema schema-file " +
                     "[-quote DOUBLE_QUOTE|BACK_SLASH|OPTIMISTIC] " +
                     "[-format JSON|TSV|CSV|XML ] " +
@@ -282,16 +283,19 @@ public class Synth {
         }
 
 
-        public static int generateFile(Options opts, SchemaSampler s, Template template, PrintStream out, int count) throws IOException, TemplateException {
+        public static int generateFile(Options opts, SchemaSampler s, Template template, PrintStream out, int count) throws IOException, TemplateException, InterruptedException
+        {
             if (template != null) {
                 PrintWriter writer = new PrintWriter(out);
 
                 for (int i = 0; i < count; i++) {
                     template.process(s.sample(), writer);
+                    Thread.sleep(opts.sleep);
                 }
             } else {
                 for (int i = 0; i < count; i++) {
                     format(opts.format, opts.quote, s.getFieldNames(), s.sample(), out);
+                    Thread.sleep(opts.sleep);
                 }
             }
 
@@ -434,6 +438,9 @@ public class Synth {
 
         @Option(name = "-count", handler = SizeParser.class)
         int count = 1000;
+
+        @Option(name = "-sleep")
+        int sleep = 1000;
 
         @Option(name = "-schema", required = true)
         File schema;
