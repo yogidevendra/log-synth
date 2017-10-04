@@ -440,7 +440,7 @@ public class Synth {
         int count = 1000;
 
         @Option(name = "-sleep")
-        int sleep = 1000;
+        int sleep = 0;
 
         @Option(name = "-schema", required = true)
         File schema;
